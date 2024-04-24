@@ -45,7 +45,8 @@ class DataGalaxyApiGlossary:
 
     def bulk_upsert_property_tree(self, workspace_name: str, properties: list) -> DataGalaxyBulkResult:
         # Existing entities are updated and non-existing ones are created.
-        properties_ok_to_bulk = to_bulk_tree(properties)
+        # properties_ok_to_bulk = to_bulk_tree(properties)
+        properties_ok_to_bulk = [properties]
 
         if not self.workspace["isVersioningEnabled"]:
             version_id = self.workspace['defaultVersionId']

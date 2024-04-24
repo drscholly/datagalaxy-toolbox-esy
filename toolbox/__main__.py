@@ -2,6 +2,7 @@ import argparse
 import logging
 import sys
 
+from toolbox.commands.laposte import laposte, laposte_parse
 from toolbox.commands.copy_attributes import copy_attributes_parse, copy_attributes
 from toolbox.commands.copy_technologies import copy_technologies_parse, copy_technologies
 from toolbox.commands.copy_screens import copy_screens_parse, copy_screens
@@ -25,6 +26,7 @@ def run(args):
     parser.add_argument("-v", "--verbose", help="increase output verbosity",
                         action="store_true")
     subparsers = parser.add_subparsers(help='sub-command help', dest='subparsers_name')
+    laposte_parse(subparsers)
     copy_attributes_parse(subparsers)
     copy_technologies_parse(subparsers)
     copy_screens_parse(subparsers)
@@ -39,6 +41,16 @@ def run(args):
     if result.verbose:
         logging.getLogger().setLevel(logging.DEBUG)
         logging.info("Verbose output")
+
+    if result.subparsers_name == 'laposte':
+        logging.info(">>> laposte")
+        laposte(
+            result.url,
+            result.token,
+            result.workspace
+        )
+        logging.info("<<< laposte")
+        return 0
 
     if result.subparsers_name == 'copy-attributes':
         logging.info(">>> copy_attributes")
