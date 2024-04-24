@@ -46,7 +46,8 @@ class DataGalaxyApiGlossary:
 
     def bulk_upsert_property_tree(self, workspace_name: str, properties: list, tag_value: Optional[str]) -> DataGalaxyBulkResult:
         # Existing entities are updated and non-existing ones are created.
-        properties_ok_to_bulk = to_bulk_tree(properties)
+        # properties_ok_to_bulk = to_bulk_tree(properties)
+        properties_ok_to_bulk = [properties]
 
         if tag_value is not None:
             properties_ok_to_bulk = prune_tree(properties_ok_to_bulk, tag_value)
