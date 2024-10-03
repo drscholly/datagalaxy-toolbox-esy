@@ -15,6 +15,7 @@ from toolbox.commands.delete_glossary import delete_glossary_parse, delete_gloss
 from toolbox.commands.copy_dictionary import copy_dictionary, copy_dictionary_parse
 from toolbox.commands.delete_dictionary import delete_dictionary, delete_dictionary_parse
 from toolbox.commands.copy_links import copy_links, copy_links_parse
+from toolbox.commands.abeille import abeille, abeille_parse
 
 
 def run(args):
@@ -42,6 +43,7 @@ def run(args):
     copy_dataprocessings_parse(subparsers)
     delete_dataprocessings_parse(subparsers)
     copy_links_parse(subparsers)
+    abeille_parse(subparsers)
     # parse some argument lists
     result = parser.parse_args(args)
     if result.verbose:
@@ -187,6 +189,16 @@ def run(args):
             result.workspace_target
         )
         logging.info("<<< copy_links")
+        return 0
+
+    if result.subparsers_name == 'abeille':
+        logging.info(">>> abeille")
+        abeille(
+            result.url,
+            result.token,
+            result.workspace
+        )
+        logging.info("<<< abeille")
         return 0
 
     parser.print_help(sys.stderr)
