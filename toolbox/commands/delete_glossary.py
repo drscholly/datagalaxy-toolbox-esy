@@ -1,5 +1,5 @@
 from toolbox.api.datagalaxy_api import DataGalaxyBulkResult
-from toolbox.api.datagalaxy_api_glossary import DataGalaxyApiGlossary
+from toolbox.api.datagalaxy_api_modules import DataGalaxyApiModules
 from toolbox.api.datagalaxy_api_workspaces import DataGalaxyApiWorkspace
 import logging
 
@@ -17,13 +17,14 @@ def delete_glossary(url: str,
     if not workspace:
         raise Exception(f'workspace {workspace_name} does not exist')
 
-    # on récupère les propriétés du glossary du workspace_source
-    glossary_api = DataGalaxyApiGlossary(
+    # fetching objects from source workspace
+    glossary_api = DataGalaxyApiModules(
         url=url,
         token=token,
-        workspace=workspace
+        workspace=workspace,
+        module="Glossary"
     )
-    glossary_properties = glossary_api.list_properties(
+    glossary_properties = glossary_api.list_objects(
         workspace_name)
 
     ids = list(map(lambda object: object['id'], glossary_properties))

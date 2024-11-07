@@ -1,5 +1,5 @@
 from toolbox.api.datagalaxy_api import DataGalaxyBulkResult
-from toolbox.api.datagalaxy_api_usages import DataGalaxyApiUsages
+from toolbox.api.datagalaxy_api_modules import DataGalaxyApiModules
 from toolbox.api.datagalaxy_api_workspaces import DataGalaxyApiWorkspace
 import logging
 
@@ -17,13 +17,14 @@ def delete_usages(url: str,
     if not workspace:
         raise Exception(f'workspace {workspace_name} does not exist')
 
-    # on récupère les propriétés du usages du workspace_source
-    usages_api = DataGalaxyApiUsages(
+    # fetching objects from source workspace
+    usages_api = DataGalaxyApiModules(
         url=url,
         token=token,
-        workspace=workspace
+        workspace=workspace,
+        module="Uses"
     )
-    usages = usages_api.list_usages(workspace_name)
+    usages = usages_api.list_objects(workspace_name)
 
     ids = list(map(lambda object: object['id'], usages))
 
