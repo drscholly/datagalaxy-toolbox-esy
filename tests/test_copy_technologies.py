@@ -21,7 +21,7 @@ def test_copy_technologies_when_nothing_on_source(mocker):
     technologies_list_mock.return_value = []
 
     # ASSERT / VERIFY
-    with pytest.raises(Exception, match='no technology found on source clientspace'):
+    with pytest.raises(Exception, match='No technology found on source clientspace'):
         copy_technologies(
             url_source='url_source',
             url_target='url_target',
