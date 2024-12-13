@@ -46,6 +46,9 @@ def copy_attributes(url_source: str,
         if format == "ValueList":
             values = list(map(lambda x: x['key'], values))
         # Create attribute in target
+        # TODO : update it later
+        if "defaultValue" in attribute:
+            del attribute["defaultValue"]
         new_attribute = attributes_api_target.create_attribute(attribute=attribute)
         # Create values in target
         attribute_key = new_attribute['attributeKey']
