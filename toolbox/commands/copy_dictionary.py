@@ -58,6 +58,13 @@ def copy_dictionary(url_source: str,
             fields = source_dictionary_api.list_children_objects(workspace_source_name, source_id, "fields")
             # todo : fetch primary keys and foreign keys
 
+            # handle source without children
+            if len(containers) == 1 and len(containers[0]) == 0 and len(structures) == 1 and len(structures[0]) == 0 and len(fields) == 1 and len(fields[0]) == 0:
+                target_dictionary_api.create_single_source(
+                    workspace_name=workspace_target_name,
+                    source=source
+                )
+
             # bulk upsert source tree
             target_dictionary_api.bulk_upsert_source_tree(
                 workspace_name=workspace_target_name,

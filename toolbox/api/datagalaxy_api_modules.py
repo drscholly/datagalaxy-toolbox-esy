@@ -140,6 +140,19 @@ class DataGalaxyApiModules:
 
         return 200
 
+    def create_single_source(self, workspace_name: str, source: dict) -> int:
+        version_id = self.workspace['defaultVersionId']
+        headers = {'Authorization': f"Bearer {self.token}"}
+        response = requests.post(f"{self.url}/{self.route}/{version_id}", json=source, headers=headers)
+        code = response.status_code
+        body_json = response.json()
+        if 200 <= code < 300:
+            logging.info(f'create_single_source - {body_json}')
+        if 400 <= code < 500:
+            raise Exception(body_json['error'])
+
+        return 201
+
     def bulk_upsert_source_tree(self, workspace_name: str, source: dict, objects: list, tag_value: Optional[str]) -> int:
         batches = create_batches(objects)
 
