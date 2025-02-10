@@ -53,10 +53,40 @@ def copy_dictionary(url_source: str,
         for source in page:
             # fetch children objects for each source
             source_id = source['id']
+            source_path = source['path']
             containers = source_dictionary_api.list_children_objects(workspace_source_name, source_id, "containers")
             structures = source_dictionary_api.list_children_objects(workspace_source_name, source_id, "structures")
             fields = source_dictionary_api.list_children_objects(workspace_source_name, source_id, "fields")
-            # todo : fetch primary keys and foreign keys
+
+            primary_keys = source_dictionary_api.list_keys(workspace_source_name, source_id, "primary")
+            foreign_keys = source_dictionary_api.list_keys(workspace_source_name, source_id, "foreign")
+            pks = []
+            for primary_key in primary_keys:
+                pk_name = primary_key['technicalName']
+                table_id = primary_key["table"]["id"]
+                table_path = ""
+                for page in structures:
+                    for table in page:
+                        if table["id"] == table_id:
+                            table_path = table["path"]
+                for column in primary_key["columns"]:
+                    column_name = column["technicalName"]
+                    pk_order = column["pkOrder"]
+                    pk = {
+                        'tablePath': table_path.replace(source_path, "", 1),
+                        'columnName': column_name,
+                        'pkName': pk_name,
+                        'pkOrder': pk_order
+                    }
+                    pks.append(pk)
+            # TODO : FK
+            # print(foreign_keys)
+
+            # create new source to fetch its id
+            new_source_id = target_dictionary_api.create_source(
+                workspace_name=workspace_target_name,
+                source=source
+            )
 
             # bulk upsert source tree
             target_dictionary_api.bulk_upsert_source_tree(
@@ -65,6 +95,18 @@ def copy_dictionary(url_source: str,
                 objects=containers + structures + fields,
                 tag_value=tag_value
             )
+
+            # create PKs and FKs
+            target_dictionary_api.create_keys(
+                workspace_name=workspace_target_name,
+                source_id=new_source_id,
+                keys=pks,
+                mode="primary")
+            # target_dictionary_api.create_keys(
+            #     workspace_name=workspace_target_name,
+            #     source_id=new_source_id,
+            #     keys=fks,
+            #     mode="foreign")
 
     return 0
 
