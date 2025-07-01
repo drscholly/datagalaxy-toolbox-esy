@@ -133,3 +133,20 @@ def prune_tree(tree, target_tag):
     # Prune the tree recursively
     pruned_tree = [node for node in tree if recursive_prune(node)]
     return pruned_tree
+
+
+valid_attributes = [
+    "owners",
+    "stewards",
+    "tags",
+    "description",
+    "summary",
+    "name",
+    "technicalName",
+    "status",
+    "type"
+]
+
+
+def clean_new_module_object(object_props) -> dict:
+    return {}

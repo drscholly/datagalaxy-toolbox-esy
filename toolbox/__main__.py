@@ -8,6 +8,7 @@ from toolbox.commands.copy_technologies import copy_technologies_parse, copy_tec
 from toolbox.commands.copy_screens import copy_screens_parse, copy_screens
 from toolbox.commands.delete_attributes import delete_attributes_parse, delete_attributes
 from toolbox.commands.copy_module import copy_module, copy_glossary_parse, copy_dictionary_parse, copy_dataprocessings_parse, copy_usages_parse
+from toolbox.commands.copy_new_module import copy_new_module, copy_strategy_parse, copy_governance_parse, copy_products_parse
 from toolbox.commands.copy_links import copy_links, copy_links_parse
 from toolbox.commands.delete_module import delete_module, delete_glossary_parse, delete_dictionary_parse, delete_dataprocessings_parse, delete_usages_parse
 
@@ -42,6 +43,10 @@ def run(args):
     delete_dictionary_parse(subparsers)
     delete_dataprocessings_parse(subparsers)
     delete_usages_parse(subparsers)
+    # Copy new modules
+    copy_strategy_parse(subparsers)
+    copy_governance_parse(subparsers)
+    copy_products_parse(subparsers)
 
     # parse some argument lists
     result = parser.parse_args(args)
@@ -243,6 +248,58 @@ def run(args):
             http_client
         )
         logging.info("<<< delete_usages")
+        return 0
+
+    # Copy modules
+    if result.subparsers_name == 'copy-strategy':
+        logging.info(">>> copy_strategy")
+        copy_new_module(
+            "Strategy",
+            result.url_source,
+            result.url_target,
+            result.token_source,
+            result.token_target,
+            result.workspace_source,
+            result.version_source,
+            result.workspace_target,
+            result.version_target,
+            result.tag_value
+        )
+        logging.info("<<< copy_strategy")
+        return 0
+
+    if result.subparsers_name == 'copy-governance':
+        logging.info(">>> copy_governance")
+        copy_new_module(
+            "Governance",
+            result.url_source,
+            result.url_target,
+            result.token_source,
+            result.token_target,
+            result.workspace_source,
+            result.version_source,
+            result.workspace_target,
+            result.version_target,
+            result.tag_value
+        )
+        logging.info("<<< copy_governance")
+        return 0
+
+    if result.subparsers_name == 'copy-products':
+        logging.info(">>> copy_products")
+        copy_new_module(
+            "Products",
+            result.url_source,
+            result.url_target,
+            result.token_source,
+            result.token_target,
+            result.workspace_source,
+            result.version_source,
+            result.workspace_target,
+            result.version_target,
+            result.tag_value
+        )
+        logging.info("<<< copy_products")
         return 0
 
     parser.print_help(sys.stderr)
