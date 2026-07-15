@@ -11,6 +11,8 @@ from toolbox.commands.copy_module import copy_module, copy_glossary_parse, copy_
 from toolbox.commands.copy_links import copy_links, copy_links_parse
 from toolbox.commands.export_module import export_module, export_glossary_parse, export_dictionary_parse, export_dataprocessings_parse, export_usages_parse
 from toolbox.commands.export_links import export_links, export_links_parse
+from toolbox.commands.import_module import import_module, import_glossary_parse, import_dictionary_parse
+from toolbox.commands.import_module import import_dataprocessings_parse, import_usages_parse, import_links_parse
 from toolbox.commands.delete_module import delete_module, delete_glossary_parse, delete_dictionary_parse, delete_dataprocessings_parse, delete_usages_parse
 
 
@@ -45,6 +47,12 @@ def run(args):
     export_dataprocessings_parse(subparsers)
     export_usages_parse(subparsers)
     export_links_parse(subparsers)
+    # Import modules
+    import_glossary_parse(subparsers)
+    import_dictionary_parse(subparsers)
+    import_dataprocessings_parse(subparsers)
+    import_usages_parse(subparsers)
+    import_links_parse(subparsers)
     # Delete modules
     delete_glossary_parse(subparsers)
     delete_dictionary_parse(subparsers)
@@ -267,6 +275,82 @@ def run(args):
             http_client
         )
         logging.info("<<< export_links")
+        return 0
+
+    # Import modules
+    if result.subparsers_name == 'import-glossary':
+        logging.info(">>> import_glossary")
+        import_module(
+            "Glossary",
+            result.url,
+            result.token,
+            result.workspace,
+            result.version,
+            result.file,
+            http_client,
+            result.bulktree
+        )
+        logging.info("<<< import_glossary")
+        return 0
+
+    if result.subparsers_name == 'import-dictionary':
+        logging.info(">>> import_dictionary")
+        import_module(
+            "Dictionary",
+            result.url,
+            result.token,
+            result.workspace,
+            result.version,
+            result.file,
+            http_client,
+            result.bulktree
+        )
+        logging.info("<<< import_dictionary")
+        return 0
+
+    if result.subparsers_name == 'import-dataprocessings':
+        logging.info(">>> import_dataprocessings")
+        import_module(
+            "DataProcessing",
+            result.url,
+            result.token,
+            result.workspace,
+            result.version,
+            result.file,
+            http_client,
+            result.bulktree
+        )
+        logging.info("<<< import_dataprocessings")
+        return 0
+
+    if result.subparsers_name == 'import-usages':
+        logging.info(">>> import_usages")
+        import_module(
+            "Uses",
+            result.url,
+            result.token,
+            result.workspace,
+            result.version,
+            result.file,
+            http_client,
+            result.bulktree
+        )
+        logging.info("<<< import_usages")
+        return 0
+
+    if result.subparsers_name == 'import-links':
+        logging.info(">>> import_links")
+        import_module(
+            "Links",
+            result.url,
+            result.token,
+            result.workspace,
+            result.version,
+            result.file,
+            http_client,
+            False
+        )
+        logging.info("<<< import_links")
         return 0
 
     # Delete modules
