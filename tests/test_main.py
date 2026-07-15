@@ -114,3 +114,30 @@ def test_run_with_valid_export_module_args_and_bulktree(mocker):
         'version_source_name',
     )
     assert export_module_mock.call_args.args[6] is True
+
+
+def test_run_with_valid_import_module_args_and_file(mocker):
+    import_module_mock = mocker.patch('toolbox.__main__.import_module')
+    exit_mock = mocker.patch('sys.exit')
+    code = run([
+        'import-glossary',
+        '--url', 'https://target',
+        '--token', 'token_target',
+        '--workspace', 'workspace_target_name',
+        '--version', 'version_target_name',
+        '--file', 'export/glossary.json',
+        '--bulktree',
+    ])
+
+    assert code == 0
+    assert exit_mock.call_count == 0
+    assert import_module_mock.call_count == 1
+    assert import_module_mock.call_args.args[0:6] == (
+        'Glossary',
+        'https://target',
+        'token_target',
+        'workspace_target_name',
+        'version_target_name',
+        'export/glossary.json',
+    )
+    assert import_module_mock.call_args.args[7] is True
