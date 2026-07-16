@@ -10,6 +10,7 @@ from toolbox.commands.delete_attributes import delete_attributes_parse, delete_a
 from toolbox.commands.copy_module import copy_module, copy_glossary_parse, copy_dictionary_parse, copy_dataprocessings_parse, copy_usages_parse
 from toolbox.commands.copy_links import copy_links, copy_links_parse
 from toolbox.commands.delete_module import delete_module, delete_glossary_parse, delete_dictionary_parse, delete_dataprocessings_parse, delete_usages_parse
+from toolbox.commands.scan_dremio import scan_dremio, scan_dremio_parse
 
 
 def run(args):
@@ -42,6 +43,8 @@ def run(args):
     delete_dictionary_parse(subparsers)
     delete_dataprocessings_parse(subparsers)
     delete_usages_parse(subparsers)
+    # Scan
+    scan_dremio_parse(subparsers)
 
     # parse some argument lists
     result = parser.parse_args(args)
@@ -243,6 +246,19 @@ def run(args):
             http_client
         )
         logging.info("<<< delete_usages")
+        return 0
+
+    # Scan
+    if result.subparsers_name == 'scan-dremio':
+        logging.info(">>> scan_dremio")
+        scan_dremio(
+            result.url,
+            result.token,
+            result.workspace,
+            result.version,
+            http_client
+        )
+        logging.info("<<< scan_dremio")
         return 0
 
     parser.print_help(sys.stderr)
