@@ -6,7 +6,7 @@ from typing import Optional
 
 class DataGalaxyApiModules:
     def __init__(self, url: str, token: str, workspace: dict, module: str, http_client: HttpClient):
-        if module not in ["Glossary", "Dictionary", "DataProcessing", "Uses", "Links"]:
+        if module not in ["Glossary", "Dictionary", "DataProcessing", "Uses", "Links", "URN", "DQ"]:
             raise Exception('The specified module does not exist.')
         self.module = module
         if module == "Glossary":
@@ -19,6 +19,10 @@ class DataGalaxyApiModules:
             self.route = "usages"
         if module == "Links":
             self.route = "links"
+        if module == "URN":
+            self.route = "objects"
+        if module == "DQ":
+            self.route = "data-quality"
 
         self.url = url
         self.token = token
@@ -248,3 +252,64 @@ class DataGalaxyApiModules:
                 raise Exception(body_json['error'])
             logging.info(f"bulk_create_links - {body_json}")
         return 201
+
+    # URN
+    def get_by_urn(self, urn: str) -> dict:
+        version_id = self.workspace['versionId']
+        headers = {'Authorization': f"Bearer {self.token}"}
+        response = self.http_client.get(f"{self.url}/{self.route}/{version_id}/{urn}", headers=headers)
+        code = response.status_code
+        body_json = response.json()
+        if code != 200:
+            raise Exception(body_json['error'])
+        return body_json['object']
+
+    def create_urn(self, objects: list) -> int:
+        version_id = self.workspace['versionId']
+        headers = {'Authorization': f"Bearer {self.token}"}
+        response = self.http_client.post(f"{self.url}/{self.route}/{version_id}/import", json=objects, headers=headers)
+        code = response.status_code
+        body_json = response.json()
+        if code != 200:
+            raise Exception(body_json['error'])
+        logging.info(f"create_urn - {body_json}")
+        return code
+
+    # DQ
+    def get_dq_rules(self, entity_id: str) -> dict:
+        headers = {'Authorization': f"Bearer {self.token}"}
+        params = {'entityId': entity_id}
+        response = self.http_client.get(f"{self.url}/{self.route}/rules", params=params, headers=headers)
+        code = response.status_code
+        body_json = response.json()
+        if code != 200:
+            raise Exception(body_json['error'])
+        return body_json['rules']
+
+    def create_dq_rule(self, rule: dict) -> int:
+        headers = {'Authorization': f"Bearer {self.token}"}
+        response = self.http_client.post(f"{self.url}/{self.route}/rules", json=rule, headers=headers)
+        code = response.status_code
+        body_json = response.json()
+        if code != 200:
+            raise Exception(body_json)
+        logging.info(f"create_dq_rule - {body_json}")
+        return body_json
+
+    def delete_dq_rule(self, rule_id: str) -> int:
+        headers = {'Authorization': f"Bearer {self.token}"}
+        response = self.http_client.delete(f"{self.url}/{self.route}/rules/{rule_id}", headers=headers)
+        code = response.status_code
+        if code != 204:
+            raise Exception(f"Error deleting DQ rule: {code}")
+        return code
+
+    def create_dq_check(self, rule_id: str, check: dict) -> int:
+        headers = {'Authorization': f"Bearer {self.token}"}
+        response = self.http_client.post(f"{self.url}/{self.route}/rules/{rule_id}/checks", json=check, headers=headers)
+        code = response.status_code
+        body_json = response.json()
+        if code != 200:
+            raise Exception(body_json)
+        logging.info(f"create_dq_check - {body_json}")
+        return code

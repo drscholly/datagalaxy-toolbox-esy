@@ -10,6 +10,8 @@ from toolbox.commands.delete_attributes import delete_attributes_parse, delete_a
 from toolbox.commands.copy_module import copy_module, copy_glossary_parse, copy_dictionary_parse, copy_dataprocessings_parse, copy_usages_parse
 from toolbox.commands.copy_links import copy_links, copy_links_parse
 from toolbox.commands.delete_module import delete_module, delete_glossary_parse, delete_dictionary_parse, delete_dataprocessings_parse, delete_usages_parse
+from toolbox.commands.create_urn import create_urn, create_urn_parse
+from toolbox.commands.create_dq import create_dq, create_dq_parse
 
 
 def run(args):
@@ -42,6 +44,9 @@ def run(args):
     delete_dictionary_parse(subparsers)
     delete_dataprocessings_parse(subparsers)
     delete_usages_parse(subparsers)
+    # New
+    create_urn_parse(subparsers)
+    create_dq_parse(subparsers)
 
     # parse some argument lists
     result = parser.parse_args(args)
@@ -243,6 +248,30 @@ def run(args):
             http_client
         )
         logging.info("<<< delete_usages")
+        return 0
+
+    if result.subparsers_name == 'create-urn':
+        logging.info(">>> create_urn")
+        create_urn(
+            result.url,
+            result.token,
+            result.workspace,
+            result.file,
+            http_client
+        )
+        logging.info("<<< create_urn")
+        return 0
+
+    if result.subparsers_name == 'create-dq':
+        logging.info(">>> create_dq")
+        create_dq(
+            result.url,
+            result.token,
+            result.workspace,
+            result.file,
+            http_client
+        )
+        logging.info("<<< create_dq")
         return 0
 
     parser.print_help(sys.stderr)
